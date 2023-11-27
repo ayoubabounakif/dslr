@@ -93,7 +93,7 @@ def main():
   file_path = input("Enter the dataset filepath: ")
 
   try:
-    # file_path = './datasets/dataset_train.csv'
+    # file_path = '../datasets/dataset_train.csv'
     df = pd.read_csv(file_path)
     # print(df.describe())
     my_df = MyNumDataFrame(df)
