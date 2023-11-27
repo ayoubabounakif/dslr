@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 
 class MyNumDataFrame:
     def __init__(self, df):
@@ -20,7 +21,6 @@ class MyNumDataFrame:
             s[col] = np.sum(self.df[col]) / n
         return s
 
-    ################################################
     def median(self):
         s = pd.Series(dtype=object)
         for col in self.df.columns:
@@ -33,19 +33,18 @@ class MyNumDataFrame:
                 index = (n - 1) // 2
                 s[col] = values[index]
         return s
-    ################################################
 
     def var(self, ddof=1):
         s = pd.Series(dtype=object)
         for col in self.df.columns:
-            n = len(self.df[col]) - 1
+            n = len(self.df[col]) - ddof
             s[col] = (1 / n) * np.sum((self.df[col] - self.mean()[col]) ** 2)
         return s
 
     def std(self, ddof=1):
         s = pd.Series(dtype=object)
         for col in self.df.columns:
-            n = len(self.df[col]) - 1
+            n = len(self.df[col]) - ddof
             s[col] = np.sqrt((1 / n) * np.sum((self.df[col] - self.mean()[col]) ** 2))
         return s
 
@@ -61,23 +60,18 @@ class MyNumDataFrame:
             s[col] = max(self.df[col])
         return s
 
-    ################################################
     def quantile(self, q=0.5):
         s = pd.Series(dtype=object)
         for col in self.df.columns:
-            values = sorted(self.df[col])
-            index = q * (len(values) - 1) 
+            sorted_values = sorted(self.df[col])
+            index = (len(sorted_values) - 1) * q
             if index.is_integer():
-                s[col] = values[int(index)]
+                s[col] = sorted_values[int(index)]
             else:
-                lower_index = int(index)
-                upper_index = lower_index + 1
-                lower_value = values[lower_index]
-                upper_value = values[upper_index]
-                interpolation = lower_value + (upper_value - lower_value) * (index - lower_index)
-                s[col] = interpolation
+                lower_index = math.floor(index)
+                upper_index = math.ceil(index)
+                s[col] = (sorted_values[lower_index] + sorted_values[upper_index]) / 2
         return s
-    ################################################
 
     def describe(self):
         df = pd.DataFrame(dtype=object, columns=self.df.columns)
@@ -99,7 +93,9 @@ def main():
   file_path = input("Enter the dataset filepath: ")
 
   try:
+    # file_path = './datasets/dataset_train.csv'
     df = pd.read_csv(file_path)
+    # print(df.describe())
     my_df = MyNumDataFrame(df)
     print(my_df.describe())
 
