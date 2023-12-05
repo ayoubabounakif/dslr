@@ -89,15 +89,16 @@ class MyNumDataFrame:
 
         return df
 
+# TODO: Edit script to take in command line arguments
 def main():
-  file_path = input("Enter the dataset filepath: ")
+#   file_path = input("Enter the dataset filepath: ")
 
   try:
-    # file_path = '../datasets/dataset_train.csv'
+    file_path = '../datasets/dataset_train.csv'
     df = pd.read_csv(file_path)
-    # print(df.describe())
-    my_df = MyNumDataFrame(df)
-    print(my_df.describe())
+    print(df.describe())
+    # my_df = MyNumDataFrame(df)
+    # print(my_df.describe())
 
   except:
     print("File not found!")
